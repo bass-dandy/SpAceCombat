@@ -22,25 +22,18 @@ public class PlayerMovement : MonoBehaviour {
 		speed = idleSpeed;
 	}
 	
-	void Update () {
-		DoMovement ();
-
-		//rb.MoveRotation (rb.rotation * deltaPitch * deltaRoll);
-		//Debug.Log (speed);
-	}
-
-	private void DoMovement() {
+	void FixedUpdate () {
 		rollRate = DoRoll ();
-		transform.Rotate (new Vector3 (0f, 0f, rollRate * Time.deltaTime));
+		transform.Rotate (new Vector3 (0f, 0f, rollRate * Time.fixedDeltaTime));
 
 		pitchRate = DoPitch ();
-		transform.Rotate (new Vector3(pitchRate * Time.deltaTime, 0f, 0f));
+		transform.Rotate (new Vector3(pitchRate * Time.fixedDeltaTime, 0f, 0f));
 
 		speed = DoAccel ();
-		transform.position = transform.position + transform.forward * speed * Time.deltaTime;
+		transform.position = transform.position + transform.forward * speed * Time.fixedDeltaTime;
 
 		yawRate = DoYaw ();
-		transform.Rotate (new Vector3(0f, yawRate * Time.deltaTime, 0f));
+		transform.Rotate (new Vector3(0f, yawRate * Time.fixedDeltaTime, 0f));
 	}
 
 	private float DoRoll() {

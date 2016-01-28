@@ -8,34 +8,30 @@ public class CameraController : MonoBehaviour {
 	[SerializeField] private float elevation;
 	[SerializeField] private float lagSeconds;
 
-	private GameObject player;
+	private Transform player;
 	private Queue<Quaternion> previousPlayerRotations;
 
 	void Start () {
-		player = GameObject.FindGameObjectWithTag ("Player");
+		player = GameObject.FindGameObjectWithTag ("Player").transform;
 		previousPlayerRotations = new Queue<Quaternion> ();
 	}
 
-	void Update () {
-		previousPlayerRotations.Enqueue (player.transform.rotation);
-	}
-
-	void LateUpdate () {
+	void FixedUpdate () {
 		float x = Input.GetAxis ("Camera X");
 		float y = Input.GetAxis ("Camera Y");
 
-		if (lagSeconds < 0) {
-			lagSeconds -= Time.deltaTime;
-			transform.position = player.transform.position - transform.forward * distance + transform.up * elevation;
+		previousPlayerRotations.Enqueue (player.rotation);
+
+		if (lagSeconds > 0) {
+			lagSeconds -= Time.fixedDeltaTime;
+			transform.position = player.position - transform.forward * distance + transform.up * elevation;
 		} else {
-			Quaternion newRotation = Quaternion.Lerp (transform.rotation, player.transform.rotation, Time.deltaTime / lagSeconds);
-			SetOrbitRotation (newRotation);
+			SetOrbitRotation (previousPlayerRotations.Dequeue());
 		}
 	}
 
 	public void SetOrbitRotation(Quaternion newRotation) {
-		transform.position = player.transform.position;
 		transform.rotation = newRotation;
-		transform.position = transform.position - transform.forward * distance + transform.up * elevation;
+		transform.position = player.position - transform.forward * distance + transform.up * elevation;
 	}
 }
