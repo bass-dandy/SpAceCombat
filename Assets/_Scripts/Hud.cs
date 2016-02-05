@@ -5,6 +5,7 @@ public class Hud : MonoBehaviour {
 
 	[SerializeField] private Color color;
 	[SerializeField] private Color lockedColor;
+	[SerializeField] private Color allyColor;
 	[SerializeField] private Material material;
 	[SerializeField] private int minBoxWidth;
 	[SerializeField] private int maxBoxWidth;
@@ -16,6 +17,7 @@ public class Hud : MonoBehaviour {
 	private Camera cam;
 	private GUIStyle style;
 	private GUIStyle lockedStyle;
+	private GUIStyle allyStyle;
 	private bool isFlickered;
 
 	void Start() {
@@ -25,11 +27,13 @@ public class Hud : MonoBehaviour {
 		// Set GUI styles
 		style = new GUIStyle();
 		lockedStyle = new GUIStyle ();
-		style.fontSize = lockedStyle.fontSize = fontSize;
-		style.clipping =  lockedStyle.clipping = TextClipping.Overflow;
+		allyStyle = new GUIStyle ();
+		style.fontSize = lockedStyle.fontSize = allyStyle.fontSize = fontSize;
+		style.clipping =  lockedStyle.clipping = allyStyle.clipping = TextClipping.Overflow;
 
 		style.normal.textColor = color;
 		lockedStyle.normal.textColor = lockedColor;
+		allyStyle.normal.textColor = allyColor;
 
 		InvokeRepeating ("Flicker", flickerDuration, flickerDuration);
 	}
@@ -61,7 +65,8 @@ public class Hud : MonoBehaviour {
 		float yMin = screenPos.y - boxWidth / 2;
 		float yMax = screenPos.y + boxWidth / 2;
 
-		GUIStyle styleToUse = p.State == Participant.HudState.P_LOCKED ? lockedStyle : style;
+		GUIStyle styleToUse = p.State == Participant.HudState.P_LOCKED ? lockedStyle : 
+			p.State == Participant.HudState.P_ALLY ? allyStyle : style;
 
 		// Draw box labels first since GUI class uses pixel coords (y-down while GL is y-up)
 		GUI.Label (new Rect(xMax + 5f, Screen.height - yMax, 0, fontSize), p.Callsign.ToUpper(), styleToUse);
@@ -112,6 +117,14 @@ public class Hud : MonoBehaviour {
 				// top left
 				GL.Vertex3 (xMin, yCenter, 0);
 				GL.Vertex3 (xCenter, yMax, 0);
+			} else if (p.State == Participant.HudState.P_ALLY) {
+				GL.Color (allyColor);
+
+				GL.Vertex3 (xMin, yMin, 0);
+				GL.Vertex3 ((xMin + xMax) / 2f, yMax, 0);
+
+				GL.Vertex3 (xMax, yMin, 0);
+				GL.Vertex3 ((xMin + xMax) / 2f, yMax, 0);
 			} else {
 				GL.Color (color);
 			}
@@ -131,14 +144,6 @@ public class Hud : MonoBehaviour {
 			GL.Vertex3 (xMin, yMin, 0);
 			GL.Vertex3 (xMin, yMax, 0);
 
-			// Draw ally symbol
-			if (p.State == Participant.HudState.P_ALLY) {
-				GL.Vertex3 (xMin, yMin, 0);
-				GL.Vertex3 ((xMin + xMax) / 2f, yMax, 0);
-
-				GL.Vertex3 (xMax, yMin, 0);
-				GL.Vertex3 ((xMin + xMax) / 2f, yMax, 0);
-			}
 			GL.End ();
 			GL.PopMatrix ();
 		}
