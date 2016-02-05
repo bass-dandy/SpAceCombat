@@ -18,51 +18,32 @@ public class PlayerMovement : MonoBehaviour {
 
 
 	void Start () {
-		rollRate = pitchRate = 0.0f;
+		rollRate = pitchRate = yawRate = 0.0f;
 		speed = idleSpeed;
 	}
-	
-	void FixedUpdate () {
-		rollRate = DoRoll ();
-		transform.Rotate (new Vector3 (0f, 0f, rollRate * Time.fixedDeltaTime));
+		
 
-		pitchRate = DoPitch ();
-		transform.Rotate (new Vector3(pitchRate * Time.fixedDeltaTime, 0f, 0f));
-
-		speed = DoAccel ();
-		transform.position = transform.position + transform.forward * speed * Time.fixedDeltaTime;
-
-		yawRate = DoYaw ();
-		transform.Rotate (new Vector3(0f, yawRate * Time.fixedDeltaTime, 0f));
-	}
-
-	private float DoRoll() {
-		float roll  = Input.GetAxis ("Roll");
-
+	public void DoRoll(float roll) {
 		if (roll != 0) {
 			rollRate = Mathf.Lerp (rollRate, -roll * maxRollRate, 0.1f);
 		} else {
 			rollRate = Mathf.Lerp (rollRate, 0.0f, 0.2f);
 		}
-		return rollRate;
-		//Quaternion deltaRoll = Quaternion.Euler(new Vector3(0f, 0f, rollRate * Time.deltaTime));
+		transform.Rotate (new Vector3 (0f, 0f, rollRate * Time.fixedDeltaTime));
 	}
 
-	private float DoPitch() {
-		float pitch = Input.GetAxis ("Pitch");
 
+	public void DoPitch(float pitch) {
 		if (pitch != 0) {
 			pitchRate = Mathf.Lerp (pitchRate, pitch * maxPitchRate, 0.1f);
 		} else {
 			pitchRate = Mathf.Lerp (pitchRate, 0.0f, 0.2f);
 		}
-		return pitchRate;
-		//Quaternion deltaPitch = Quaternion.Euler(new Vector3(pitchRate * Time.deltaTime, 0f, 0f));
+		transform.Rotate (new Vector3(pitchRate * Time.fixedDeltaTime, 0f, 0f));
 	}
 
-	private float DoAccel() {
-		float accel = Input.GetAxis ("Acceleration");
 
+	public void DoAccel(float accel) {
 		if (accel > 0) {
 			speed = Mathf.Lerp (speed, accel * maxSpeed, 0.02f);
 		} else if (accel < 0) {
@@ -70,14 +51,11 @@ public class PlayerMovement : MonoBehaviour {
 		} else {
 			speed = Mathf.Lerp (speed, idleSpeed, 0.001f);
 		}
-		return speed;
-		//rb.MovePosition (transform.position + transform.forward * idleSpeed * Time.deltaTime);
+		transform.position = transform.position + transform.forward * speed * Time.fixedDeltaTime;
 	}
 
-	private float DoYaw() {
-		bool right = Input.GetButton ("Yaw Right");
-		bool left  = Input.GetButton ("Yaw Left");
 
+	public void DoYaw(bool left, bool right) {
 		if (left && !right) {
 			yawRate = Mathf.Lerp (yawRate, -maxYawRate, 0.1f);
 		} else if (right && !left) {
@@ -85,6 +63,6 @@ public class PlayerMovement : MonoBehaviour {
 		} else {
 			yawRate = Mathf.Lerp (yawRate, 0f, 0.2f);
 		}
-		return yawRate;
+		transform.Rotate (new Vector3(0f, yawRate * Time.fixedDeltaTime, 0f));
 	}
 }
