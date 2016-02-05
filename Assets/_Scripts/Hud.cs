@@ -9,6 +9,7 @@ public class Hud : MonoBehaviour {
 	[SerializeField] private Material material;
 	[SerializeField] private int minBoxWidth;
 	[SerializeField] private int maxBoxWidth;
+	[SerializeField] private int gunCrossWidth;
 	[SerializeField] private float flickerDuration;
 	[SerializeField] private int fontSize;
 	[SerializeField] private int lockThreshold;
@@ -19,6 +20,8 @@ public class Hud : MonoBehaviour {
 	private GUIStyle lockedStyle;
 	private GUIStyle allyStyle;
 	private bool isFlickered;
+
+	private GunCrossRenderer gunCross;
 
 	void Start() {
 		participants = GameObject.FindGameObjectWithTag("Participants").GetComponent<ParticipantManager>();
@@ -36,6 +39,7 @@ public class Hud : MonoBehaviour {
 		allyStyle.normal.textColor = allyColor;
 
 		InvokeRepeating ("Flicker", flickerDuration, flickerDuration);
+		gunCross = new GunCrossRenderer (gunCrossWidth, cam, allyColor);
 	}
 
 	private void Flicker() {
@@ -73,11 +77,13 @@ public class Hud : MonoBehaviour {
 
 		// Draw distance to target if tracked or locked
 		if (p.State == Participant.HudState.P_TRACKED || p.State == Participant.HudState.P_LOCKED) {
-			int distance = (int)(Vector3.Distance (cam.transform.position, p.transform.position));
-			GUI.Label (new Rect (xMax + 5f, Screen.height - yMax + fontSize, 0, fontSize), distance + "m", styleToUse);
+			float distance = Vector3.Distance (cam.transform.position, p.transform.position);
+			GUI.Label (new Rect (xMax + 5f, Screen.height - yMax + fontSize, 0, fontSize), (int) distance + "m", styleToUse);
 
 			if (distance < lockThreshold) {
 				p.State = Participant.HudState.P_LOCKED;
+				material.SetPass (0);
+				gunCross.Draw (distance);
 			} else {
 				p.State = Participant.HudState.P_TRACKED;
 			}
