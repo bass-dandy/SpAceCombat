@@ -6,12 +6,14 @@ public class InputHandler : MonoBehaviour {
 	[SerializeField] private CameraController mainCamera;
 	[SerializeField] private float targetLookDelay;
 
-	private PlayerMovement player; 
+	private PlayerMovement player;
+    private Gun gun;
 	private ParticipantManager participants;
 	private float targetHold;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMovement> ();
+        gun = player.GetComponentInChildren<Gun> ();
 		participants = GameObject.FindGameObjectWithTag ("Participants").GetComponent<ParticipantManager> ();
 		targetHold = targetLookDelay;
 	}
@@ -19,10 +21,11 @@ public class InputHandler : MonoBehaviour {
 
 	// Inputs unrelated to movement
 	void Update () {
+        // Target switching/looking
 		if (Input.GetButton ("Target")) {
 			if (targetHold > 0.0f)
 				targetHold -= Time.deltaTime;
-			else
+			else if (participants.CurrentTarget != null)
 				mainCamera.LookAt (participants.CurrentTarget.transform, player.transform.up);
 		} else {
 			if (0.0f < targetHold && targetHold < targetLookDelay) {
@@ -31,6 +34,10 @@ public class InputHandler : MonoBehaviour {
 			targetHold = targetLookDelay;
 			mainCamera.Follow ();
 		}
+        // Shoot gun
+        if (Input.GetButton ("Gun")) {
+            gun.Fire();
+        }
 	}
 
 
