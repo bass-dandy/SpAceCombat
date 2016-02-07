@@ -8,12 +8,14 @@ public class InputHandler : MonoBehaviour {
 
 	private PlayerMovement player;
     private Gun gun;
+    private MissileLauncher missiles;
 	private ParticipantManager participants;
 	private float targetHold;
 
 	void Start () {
 		player = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMovement> ();
         gun = player.GetComponentInChildren<Gun> ();
+        missiles = player.GetComponentInChildren<MissileLauncher> ();
 		participants = GameObject.FindGameObjectWithTag ("Participants").GetComponent<ParticipantManager> ();
 		targetHold = targetLookDelay;
 	}
@@ -37,6 +39,10 @@ public class InputHandler : MonoBehaviour {
         // Shoot gun
         if (Input.GetButton ("Gun")) {
             gun.Fire();
+        }
+        // Fire missiles
+        if(Input.GetButtonDown("Missile")) {
+            missiles.Fire();
         }
 	}
 
