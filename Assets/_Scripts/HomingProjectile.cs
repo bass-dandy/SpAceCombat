@@ -9,7 +9,7 @@ public class HomingProjectile : Projectile {
 	
     void Start () {
         Participant tgtObj = GameObject.FindGameObjectWithTag("Participants").GetComponent<ParticipantManager>().CurrentTarget;
-        if (tgtObj != null)
+        if (tgtObj != null && tgtObj.State == Participant.HudState.P_LOCKED)
             tgt = tgtObj.transform;
     }
 

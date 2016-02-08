@@ -7,7 +7,6 @@ public class CameraController : MonoBehaviour {
 	private enum CameraMode
 	{
 		MODE_FOLLOW,
-		MODE_ORBIT,
 		MODE_LOOKAT
 	}
 
@@ -33,7 +32,8 @@ public class CameraController : MonoBehaviour {
 		if (lagSeconds > 0) {
 			lagSeconds -= Time.fixedDeltaTime;
 		} else if (mode == CameraMode.MODE_FOLLOW) {
-			SetOrbitRotation (previousPlayerRotations.Dequeue ());
+            Quaternion orbit = Mathf.Abs(x) > Mathf.Abs(y) ? Quaternion.AngleAxis(180f * x, player.transform.up) : Quaternion.AngleAxis(90f * y, player.transform.right);
+			SetOrbitRotation (orbit * previousPlayerRotations.Dequeue());
 		} else {
 			previousPlayerRotations.Dequeue ();
 		}
