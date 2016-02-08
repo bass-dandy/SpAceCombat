@@ -15,7 +15,7 @@ public class HomingProjectile : Projectile {
 
 	void FixedUpdate () {
 	    if (tgt != null) {
-            Quaternion tgtRotation = Quaternion.LookRotation (tgt.position - transform.position);
+            Quaternion tgtRotation = Quaternion.LookRotation (tgt.position - transform.position, transform.up);
             transform.rotation = Quaternion.RotateTowards (transform.rotation, tgtRotation, agility);
         }
         Move ();
