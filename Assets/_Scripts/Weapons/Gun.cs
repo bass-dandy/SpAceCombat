@@ -20,7 +20,7 @@ public class Gun : MonoBehaviour {
         if (elapsed <= 0f) {
             elapsed = delay;
             Transform exitPoint = alternator ? left.transform : right.transform;
-            GameObject bullet = (GameObject) Instantiate (bulletPrefab, exitPoint.position, transform.rotation);
+            Instantiate (bulletPrefab, exitPoint.position, transform.rotation);
             alternator = !alternator;
         } else {
             elapsed -= Time.deltaTime;

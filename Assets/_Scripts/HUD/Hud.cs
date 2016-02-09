@@ -22,6 +22,7 @@ public class Hud : MonoBehaviour {
 	private bool isFlickered;
 
 	private GunCrossRenderer gunCross;
+    private ArrowToTgtRenderer arrow;
 
 	void Start() {
 		participants = GameObject.FindGameObjectWithTag("Participants").GetComponent<ParticipantManager>();
@@ -40,6 +41,7 @@ public class Hud : MonoBehaviour {
 
 		InvokeRepeating ("Flicker", flickerDuration, flickerDuration);
 		gunCross = new GunCrossRenderer (gunCrossWidth, cam, allyColor);
+        arrow = new ArrowToTgtRenderer(cam, allyColor, material);
 	}
 
 	private void Flicker() {
@@ -59,9 +61,10 @@ public class Hud : MonoBehaviour {
 				DrawBox (screenPos, p);
 			}
 		}
-	}
+        arrow.Draw();
+    }
 
-	private void DrawBox(Vector3 screenPos, Participant p) {
+    private void DrawBox(Vector3 screenPos, Participant p) {
 		float boxWidth = Mathf.Clamp (maxBoxWidth - screenPos.z / 5, minBoxWidth, maxBoxWidth);
 
 		float xMin = screenPos.x - boxWidth / 2;
@@ -152,6 +155,6 @@ public class Hud : MonoBehaviour {
 
 			GL.End ();
 			GL.PopMatrix ();
-		}
-	}
+        }
+    }
 }
