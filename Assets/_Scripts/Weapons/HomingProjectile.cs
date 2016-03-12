@@ -19,6 +19,7 @@ public class HomingProjectile : Projectile {
             Quaternion tgtRotation = Quaternion.LookRotation (tgt.position - transform.position, transform.up);
             transform.rotation = Quaternion.RotateTowards (transform.rotation, tgtRotation, agility);
         }
+        transform.Rotate(Random.Range(-1f, 1f) * agility * 2f, Random.Range(-1f, 1f) * agility * 2f, Random.Range(-1f, 1f) * agility * 2f);
         Move ();
 	}
 
