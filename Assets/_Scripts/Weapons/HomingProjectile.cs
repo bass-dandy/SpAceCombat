@@ -3,6 +3,7 @@ using System.Collections;
 
 public class HomingProjectile : Projectile {
 
+    [SerializeField] private ParticleSystem explosion;
     [SerializeField] private float agility;
 
     private Transform tgt;
@@ -29,5 +30,7 @@ public class HomingProjectile : Projectile {
             Destroy(trail.gameObject, trail.duration + trail.startLifetime);
         }
         Destroy (gameObject);
+        GameObject explosionInstance = Instantiate (explosion.gameObject, transform.position, transform.rotation) as GameObject;
+        Destroy (explosionInstance, explosion.duration + explosion.startLifetime);
     }
 }
