@@ -38,7 +38,7 @@ public class ArrowToTgtRenderer {
 
                 // Vector perpendicular to direction. This is for the triangle base.
                 Vector3 directionOrtho = new Vector3(-direction.y, direction.x, 0) * 5;
-                Vector3 tip = origin + direction * 200;
+                Vector3 tip = origin + direction * 300;
                 Vector3 bottom = tip - direction * 40;
 
                 // Convert everything to NDC space

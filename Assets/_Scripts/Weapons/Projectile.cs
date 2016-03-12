@@ -15,7 +15,11 @@ public class Projectile : MonoBehaviour {
             ttl -= Time.fixedDeltaTime;
             transform.position = transform.position + transform.forward * speed;
         } else {
-            Destroy(gameObject);
+            DestroySelf();
         }
+    }
+
+    protected virtual void DestroySelf() {
+        Destroy (gameObject);
     }
 }

@@ -20,4 +20,14 @@ public class HomingProjectile : Projectile {
         }
         Move ();
 	}
+
+    protected override void DestroySelf () {
+        ParticleSystem[] trails = gameObject.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem trail in trails) {
+            trail.transform.SetParent(null);
+            trail.Stop();
+            Destroy(trail.gameObject, trail.duration + trail.startLifetime);
+        }
+        Destroy (gameObject);
+    }
 }
